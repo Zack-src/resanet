@@ -1,0 +1,79 @@
+{% include "vueEntete.html" %}
+{% include "vueEnteteGestionnaire.html" %}
+
+
+<div class="container-fluid">
+
+	<div class="row d-flex justify-content-start">
+		<div class="col-md-1"></div>
+		
+		<div class="col-md-5">
+
+			<div></div>
+
+			<p>Jours férier :<p>
+
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th class="col-md-1">Date</th>
+						<th class="col-md-2">Description</th>
+						<th class="col-md-1">Option</th>
+					</tr>
+				</thead>
+				<tbody>
+
+					{% for i in range( joursFerier | length ) %}
+					<tr>
+						<td style="min-height: 50px;">
+							<a 
+							{% if joursFerier[i]['activee'] %}
+								class="btn btn-success"
+								href="/gestionnaire/DisableJourFerier/{{joursFerier[i]['date']}}"
+							{% else %}
+								class="btn btn-default"
+								href="/gestionnaire/EnableJourFerier/{{joursFerier[i]['date']}}"
+							{% endif %}
+							>
+								{{ joursFerier[i]['date'] }}
+							</a>
+						</td>
+						<td><strong>
+							{{ joursFerier[i]['description'] }}
+						</td></strong>
+						<td>
+							<a class="btn btn-danger" href="/gestionnaire/removeJourFerier/{{ joursFerier[i]['date'] }}">
+								Supprimer
+							</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+
+
+		</div>
+
+		<div class="col-md-5">
+			<form role="form" action="/gestionnaire/addJourFerier" method="POST">
+				<div class="form-group">
+					<label >Jour Ferier</label>
+					<input type="date" name="date" required>
+
+
+					<label for="activee">Actvier</label>
+					<input type="checkbox" name="activee" checked>
+					
+					<input type="text" name="description" placeholder="description" maxlength="40" size="35px" required>
+					<button type="submit" class="btn btn-success" >Ajoutter</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="col-md-1"></div>
+
+	</div>
+</div>
+
+{% include "vuePied.html" %}

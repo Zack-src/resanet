@@ -1,0 +1,271 @@
+{% include "vueEntete.html" %}
+
+{% include "vueEnteteGestionnaire.html" %}
+
+<script>
+function myFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+</script>
+
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-1"></div>
+		
+			<div class="col-md-1">
+
+				<div></div>
+
+				<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Matricule">
+
+				<table class="table table-striped" id="myTable">
+					<thead>
+						<tr>
+							<th scope="col">N° Carte</th>
+							<th colspan="0.5" scope="col">Solde</th>
+							<th scope="col">Matricule</th>
+							<th scope="col">Nom</th>
+							<th scope="col">Prénom</th>
+							<th scope="col">Service</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						{% for i in range( lePersonnels | length ) %}
+			
+							<tr>
+								<td>{{ lePersonnels[i]['matricule'] }}</td>
+								<td>{{ lePersonnels[i]['solde'] }}</td>
+								<td>{{ lePersonnels[i]['matricule'] }}</td>
+								<td>{{ lePersonnels[i]['nom'] }}</td>
+								<td>{{ lePersonnels[i]['prenom'] }}</td>
+								<td>{{ lePersonnels[i]['nomService'] }}</td>
+								
+								<!-- créditer  -->
+								<td>
+								<td>
+
+									<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalCrediter{{lePersonnels[i]['matricule']}}">
+										Créditer Carte
+									</button>
+																		
+									<div 
+									class="modal fade" id="ModalCrediter{{lePersonnels[i]['matricule']}}" 
+									tabindex="-1" role="dialog" aria-labelledby="ModalCrediterTitle{{lePersonnels[i]['matricule']}}" 
+									aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="ModalCrediterLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
+												</div>
+												
+												<div class="modal-body">
+													
+													<p>
+														{{ lePersonnels[i]['matricule'] }}
+														{{ lePersonnels[i]['nom'] }} {{ lePersonnels[i]['prenom'] }}
+														{{ lePersonnels[i]['nomService'] }}
+														{{ lePersonnels[i]['nomService'] }}
+													</p>
+													<p>
+														{{ lePersonnels[i]['dateNaissance'] }}
+													</p>
+													
+													<form role="form" action="/gestionnaire/CrediterCarte/{{lePersonnels[i]['matricule']}}" method="POST">
+														<div class="form-group">
+															<label for="Credit">Somme</label>
+															<input type="number" class="form-check-input" name="somme" id="active"/>
+														</div>
+
+														<button type="submit" class="btn btn-success" >Créditer</button>
+														<a href="/gestionnaire/getPersonnelAvecCarte" class="btn btn-danger">Annuller</a>
+
+													</form>
+
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</td>
+								
+								<!-- activer / bloquer  -->
+								<td>
+									<a
+									{% if lePersonnels[i]['activee'] == True %}
+										href="/gestionnaire/bloquerCarte/{{lePersonnels[i]['matricule']}}" 
+										class="btn btn-danger btn-block">Bloquer
+									{% else %}
+										href="/gestionnaire/activerCarte/{{lePersonnels[i]['matricule']}}" 
+										class="btn btn-success btn-block">Activer
+									{% endif %} 
+									
+									<a/>
+								</td>
+								
+								<!-- reset mdp  -->
+								<td>
+									{% if lePersonnels[i]['activee'] == True %}
+										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalResetMDP{{lePersonnels[i]['matricule']}}">
+											Reset MDP
+										</button>
+										
+										
+										<div 
+										class="modal fade" id="ModalResetMDP{{lePersonnels[i]['matricule']}}" 
+										tabindex="-1" role="dialog" aria-labelledby="ModalResetMDPTitle{{lePersonnels[i]['matricule']}}" 
+										aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title" id="ModalResetMDPLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
+													</div>
+													
+													<div class="modal-body">
+														
+														<p>
+															{{ lePersonnels[i]['matricule'] }}
+															{{ lePersonnels[i]['nom'] }} {{ lePersonnels[i]['prenom'] }}
+															{{ lePersonnels[i]['nomService'] }}
+															{{ lePersonnels[i]['nomService'] }}
+														</p>
+														<p>
+															{{ lePersonnels[i]['dateNaissance'] }}
+														</p>
+														
+														
+														<a href="/gestionnaire/reinitialiserMdp/{{lePersonnels[i]['matricule']}}" 
+														class="btn btn-success">Oui</a>
+														<button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>	
+													</div>
+													
+												</div>
+											</div>
+										</div>
+									{% endif %}
+								</td>
+								<!-- historique -->
+								<td>
+									<button type="button" class="btn btn-info" data-toggle="modal" 
+									data-target="#ModalHistorique{{lePersonnels[i]['matricule']}}">
+										Historique
+									</button>
+
+									<div 
+									class="modal fade" id="ModalHistorique{{lePersonnels[i]['matricule']}}" 
+									tabindex="-1" role="dialog" aria-labelledby="ModalHistoriqueTitle{{lePersonnels[i]['matricule']}}" 
+									aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title">Historique</h5>
+													<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<div class="modal-body">
+												
+													<div class="row">
+														{% if dates[i]['dates'] | length > 0 %}
+															{% for j in range( dates[i]['dates'] | length ) %}
+																<div class="col-md-2">
+																	<a disabled="disabled" class="btn btn-success">
+																		{{ dates[i]['dates'][j] }}
+																	</a>
+																	<br/><br/>
+																</div>
+																<div class="col-md-1"></div>
+
+															{% endfor %}
+														
+														{% else %}
+															<div class="col-md-5">
+																<p>Cette n'as aucune reservation</p>
+															</div>
+														
+														{% endif %}
+														
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+									
+								</td>
+
+								<td>
+									<button type="button" class="btn btn-danger" data-toggle="modal" 
+									data-target="#ModalDeleteAcc{{lePersonnels[i]['matricule']}}">
+										Supprimer
+									</button>
+
+									<div
+									class="modal fade" id="ModalDeleteAcc{{lePersonnels[i]['matricule']}}" 
+									tabindex="-1" role="dialog" aria-labelledby="ModalDeleteAccTitle{{lePersonnels[i]['matricule']}}" 
+									aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="ModalDeleteAccLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
+												</div>
+												
+												<div class="modal-body">
+													<p> 
+														<strong>Voulez vous supprimer la carte de :</strong>
+													</p>
+													<p>
+														{{ lePersonnels[i]['matricule'] }}
+														{{ lePersonnels[i]['nom'] }} {{ lePersonnels[i]['prenom'] }}
+														{{ lePersonnels[i]['nomService'] }}
+														{{ lePersonnels[i]['nomService'] }}
+													</p>
+													<p>
+														{{ lePersonnels[i]['dateNaissance'] }}
+													</p>
+													
+													
+													<a href="/gestionnaire/SupprimerCarte/{{lePersonnels[i]['matricule']}}" 
+													class="btn btn-success">Oui</a>
+													<button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>	
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+								
+						{% endfor %}
+					
+					</tbody>
+				</table>
+
+			</div>
+		<div class="col-md-1"></div>
+				
+	</div>
+	
+</div>
+
+
+{% include "vuePied.html" %}

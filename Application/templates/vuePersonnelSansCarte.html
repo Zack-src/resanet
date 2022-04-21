@@ -1,0 +1,120 @@
+	{% include "vueEntete.html" %}
+
+{% include "vueEnteteGestionnaire.html" %}
+
+<script>
+function myFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+</script>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-1"></div>
+	
+			<div class="col-md-1">
+
+				<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Matricule">
+				
+				<table class="table" id="myTable">
+					<thead>
+						<tr>
+							<th scope="col">Matricule</th>
+							<th scope="col">Nom</th>
+							<th scope="col">Prénom</th>
+							<th scope="col">Service</th>
+							<th scope="col">Carte</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						{% for i in range( nbPersonnels ) %}
+			
+							<tr>
+								<td>{{ lePersonnels[i]['matricule'] }}</td>
+								<td>{{ lePersonnels[i]['nom'] }}</td>
+								<td>{{ lePersonnels[i]['prenom'] }}</td>
+								<td>{{ lePersonnels[i]['nomService'] }}</td>
+								<td>
+
+									<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalCenter{{lePersonnels[i]['matricule']}}">
+										Creer Carte
+									</button>
+									
+									
+									<div 
+									class="modal fade" id="ModalCenter{{lePersonnels[i]['matricule']}}" 
+									tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle{{lePersonnels[i]['matricule']}}" 
+									aria-hidden="true">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="ModalLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
+												</div>
+												
+												<div class="modal-body">
+													
+													<p>
+														{{ lePersonnels[i]['matricule'] }}
+														{{ lePersonnels[i]['nom'] }} {{ lePersonnels[i]['prenom'] }}
+														{{ lePersonnels[i]['nomService'] }}
+														{{ lePersonnels[i]['nomService'] }}
+													</p>
+													<p>
+														{{ lePersonnels[i]['dateNaissance'] }}
+													</p>
+													
+													<form role="form" action="/gestionnaire/CreerCarte/{{lePersonnels[i]['matricule']}}" method="POST">
+														<div class="form-group">
+															<label for="numeroCarte">Activer carte</label>
+															<input type="checkbox" class="form-check-input" name="active" id="active"/>
+														</div>
+
+														<button type="submit" class="btn btn-success">Creer</button>
+														<a data-dismiss="modal" class="btn btn-danger">Annuller</a>
+
+													</form>
+
+												</div>
+												
+											</div>
+										</div>
+									</div>
+
+								</td>
+							</tr>
+						
+						{% endfor%}
+					
+					</tbody>
+				</table>
+
+			</div>
+		<div class="col-md-1"></div>
+				
+	</div>
+	
+	
+</div>
+
+
+{% include "vuePied.html" %}
+
