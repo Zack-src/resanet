@@ -1,22 +1,78 @@
 {% include "vueEntete.html" %}
 {% include "vueEnteteAccueil.html" %}
 
-<div class="container-fluid">
-    <div class="row">
-		<div class="col-md-4"></div>
-		<div class="col-md-4">
-            <a href="/usager/session/choisir" class="btn btn-primary btn-lg btn-block">Usager</a>
-		</div>
-		<div class="col-md-4"></div>
-	</div>
-    <p></p>
-    <div class="row">
-		<div class="col-md-4"></div>
-		<div class="col-md-4">
-            <a href="/gestionnaire/session/choisir" class="btn btn-primary btn-lg btn-block">Gestionnaire</a>
-		</div>
-		<div class="col-md-4"></div>
-	</div>
+<div class="modal fade" id="ModalConnection" tabindex="-1" role="dialog" aria-labelledby="ModalConnectionTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalConnectionLongTitle">Connection</h5>
+            </div>
+
+            <br>
+            {%if LoginError != "None"%}
+                <center><p class="text-danger">{{LoginErorr}}</p></center>
+            {%endif%}      
+      
+            <div class="modal-body">
+
+            <div class="usager" style="display: block;" id="usager_form">
+                <p>Connection Usager</p>
+                <form role="form" action="/usager/seConnecter" method="POST">
+                    <div class="form-group">
+                        <label for="numeroCarte">Numéro de la carte</label>
+                        <input type="text" class="form-control" name="numeroCarte" id="numeroCarte" placeholder="Saisir le numéro de la carte" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="mdp">Mot de passe</label>
+                        <input type="password" class="form-control" name="mdp" id="mdp" placeholder="Saisir le mot de passe" required/>
+                    </div>
+                    <center><button type="submit" class="btn btn-primary">Se connecter</button></center>
+                </form>
+            </div>
+
+            <div class="gestionnaire" style="display: none;" id="gestionnaire_form">
+                <p>Connection Gestionnaire</p>
+                <form role="form" action="/gestionnaire/seConnecter" method="POST">
+  
+                    <div class="form-group">
+                        <label for="login">Nom de connexion</label>
+                        <input type="text" class="form-control" name="login" id="login" placeholder="Saisir votre login" required/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mdp">Mot de passe</label>
+                        <input type="password" class="form-control" name="mdp" id="mdp" placeholder="Saisir le mot de passe" required/>
+                    </div>
+                    <center><button type="submit" class="btn btn-primary">Se connecter</button></center>
+                </form>
+            </div>
+  
+            <br>
+
+            <center>
+                <a class="btn text-info" id="usager_btn" style="display: none;">Usager</a>
+                <a class="btn text-info" id="gestionnaire_btn" style="display: block;">Gestionnaire</a>
+            </center>
+        
+        </div>
+    </div>
 </div>
+
+<script>
+    document.getElementById('usager_btn').onclick = function changeContent() {
+        document.getElementById('usager_form').style = "display: block";
+        document.getElementById('gestionnaire_form').style = "display: none";
+
+        document.getElementById('usager_btn').style = "display: none";
+        document.getElementById('gestionnaire_btn').style = "display: block";
+    }
+    document.getElementById('gestionnaire_btn').onclick = function changeContent() {
+        document.getElementById('usager_form').style = "display: none";
+        document.getElementById('gestionnaire_form').style = "display: block";
+
+        document.getElementById('usager_btn').style = "display: block";
+        document.getElementById('gestionnaire_btn').style = "display: none";
+    }
+</script>
 
 {% include "vuePied.html" %}

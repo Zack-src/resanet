@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from pickle import NONE
 from flask import *
 from modeles import modeleResanet
 from technique import datesResanet
@@ -9,9 +10,10 @@ from datetime import datetime
 app = Flask( __name__ )
 app.secret_key = 'resanet'
 
-@app.route( '/' , methods = [ 'GET' ] )
+
+@app.route( '/', methods = [ 'GET' ] )
 def index() :
-	return render_template( 'vueAccueil.html' )
+	return render_template( 'vueAccueil.html', LoginError = "None" )
 
 
 @app.errorhandler(404)
@@ -23,9 +25,6 @@ def not_found(e):
 #USAGER
 ##########################################################################
 
-@app.route( '/usager/session/choisir' , methods = [ 'GET' ] )
-def choisirSessionUsager() :
-	return render_template( 'vueConnexionUsager.html' , carteBloquee = False , echecConnexion = False , saisieIncomplete = False )
 
 @app.route( '/usager/seConnecter' , methods = [ 'POST' ] )
 def seConnecterUsager() :
@@ -43,13 +42,12 @@ def seConnecterUsager() :
 				session[ 'role' ] = "usager"
 
 				return redirect( '/usager/reservations/lister' )
-				
 			else :
-				return render_template('vueConnexionUsager.html', carteBloquee = True , echecConnexion = False , saisieIncomplete = False )
+				return render_template('vueAccueil.html', LoginErorr = "Carte Bloquer" )
 		else :
-			return render_template('vueConnexionUsager.html', carteBloquee = False , echecConnexion = True , saisieIncomplete = False )
+			return render_template('vueAccueil.html', LoginErorr = "/Echec de la connection" )
 	else :
-		return render_template('vueConnexionUsager.html', carteBloquee = False , echecConnexion = False , saisieIncomplete = True)
+		return render_template('vueAccueil.html', LoginErorr = "Saisi incomplete" )
 
 
 @app.route( '/usager/seDeconnecter' , methods = [ 'GET' ] )
@@ -185,9 +183,9 @@ def seConnecterGestionnaire() :
 
 			return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 		else :
-			return render_template('vueConnexionGestionnaire.html', echecConnexion = True , saisieIncomplete = False )
+			return render_template('vueAccueil.html', LoginError = "Echec de la connection" )
 	else :
-		return render_template('vueConnexionGestionnaire.html', echecConnexion = False , saisieIncomplete = True)
+		return render_template('vueAccueil.html', LoginError = "Saisi Incomplete")
 
 
 @app.route( '/gestionnaire/seDeconnecter' , methods = [ 'GET' ] )
@@ -305,7 +303,7 @@ def getPersonnelSansCarte() :
 	if check_gestionnaire_login():
 		personnels = modeleResanet.getPersonnelsSansCarte()
 		if personnels != None :
-			return render_template('vuePersonnelSansCarte.html', lePersonnels = personnels, nbPersonnels = len(personnels))
+			return render_template('vuePersonnelSansCarte.html', lePersonnels = personnels)
 		#else : db inaccésible
 	else:
 		return redirect('/')
@@ -370,11 +368,6 @@ def DisableJourFerier(jour):
 		return redirect('/gestionnaire/JourFerier')
 	else:
 		return redirect('/')
-
-
-@app.route( '/gestionnaire/session/choisir' , methods = [ 'GET' ] )
-def choisirSessionGestionnaire() :
-	return render_template( 'vueConnexionGestionnaire.html' , carteBloquee = False , echecConnexion = False , saisieIncomplete = False )
 
 if __name__ == '__main__' :
 	app.run( debug = True , host = '0.0.0.0' , port = 5000 )

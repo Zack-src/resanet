@@ -46,7 +46,7 @@ function myFunction() {
 					</thead>
 					<tbody>
 					
-						{% for i in range( nbPersonnels ) %}
+						{% for i in range( lePersonnels | length ) %}
 			
 							<tr>
 								<td>{{ lePersonnels[i]['matricule'] }}</td>

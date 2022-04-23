@@ -11,46 +11,36 @@
 	
 	<div class="row">
 		<div class="col-md-1"></div>
-		<div class="col-md-4">
-			
-			 <p class="alert alert-info" role="alert">Nous sommes le {{ lesDates[0]['fr'] }}</p>
-			
-		</div>
-		
-	</div>
 	
-	<div class="row">
-		<div class="col-md-1"></div>
-	
-			{% for i in range(5) %}
-				
-				<div class="col-md-1">
-				
-					<a 
-						{% if lesDates[i]['reservee'] %}
-							href="/usager/reservations/annuler/{{ lesDates[i]['iso'] }}" 
-							class="btn btn-success btn-info.focus"
-						{% else %}
-							href="/usager/reservations/enregistrer/{{ lesDates[i]['iso'] }}"
-							class="btn btn-default btn-info-focus"
-						{% endif %}
-						
-						title = {{ DayName[i] }}
-						
-						{% if lesDates[i]['verrouillee'] or lesDates[i]['ferier'] %}
-							disabled="disabled"
-						{% endif %} 
-					>
+		{% for i in range(5) %}
+			
+			<div class="col-md-1">
+			
+				<a 
+					{% if lesDates[i]['reservee'] %}
+						href="/usager/reservations/annuler/{{ lesDates[i]['iso'] }}" 
+						class="btn btn-success btn-info.focus"
+					{% else %}
+						href="/usager/reservations/enregistrer/{{ lesDates[i]['iso'] }}"
+						class="btn btn-default btn-info-focus"
+					{% endif %}
 					
-						{{ lesDates[i]['fr'] }}
-					</a>
+					title = {{ DayName[i] }}
+					
+					{% if lesDates[i]['verrouillee'] or lesDates[i]['ferier'] %}
+						disabled="disabled"
+					{% endif %} 
+				>
 				
-				
-				</div>
-				<div class="col-md-1"></div>
+					{{ lesDates[i]['fr'] }}
+				</a>
 			
-			{% endfor%}
-		</div>
+			
+			</div>
+			<div class="col-md-1"></div>
+		
+		{% endfor%}
+		
 	</div>
 
 	
@@ -59,36 +49,36 @@
 	<div class="row">
 		<div class="col-md-1"></div>
 		
-			{% for i in range(5,10) %}
+		{% for i in range(5,10) %}
+		
+			<div class="col-md-1">
 			
-				<div class="col-md-1">
+				<a
+					data-toggle="popover"
+					data-trigger="hover"
+					data-content="{{ DayName[i] }}"
 				
-					<a
-						data-toggle="popover"
-						data-trigger="hover"
-						data-content="{{ DayName[i] }}"
+					{% if lesDates[i]['reservee'] %}
+						href="/usager/reservations/annuler/{{ lesDates[i]['iso'] }}" 
+						class="btn btn-success"
+					{% else %}
+						href="/usager/reservations/enregistrer/{{ lesDates[i]['iso'] }}"
+						class="btn btn-default"
+					{% endif %}
 					
-						{% if lesDates[i]['reservee'] %}
-							href="/usager/reservations/annuler/{{ lesDates[i]['iso'] }}" 
-							class="btn btn-success"
-						{% else %}
-							href="/usager/reservations/enregistrer/{{ lesDates[i]['iso'] }}"
-							class="btn btn-default"
-						{% endif %}
-						
-						{% if lesDates[i]['verrouillee'] %}
-							disabled="disabled"
-						{% endif %}
-					
-					>
-					
-						{{ lesDates[i]['fr'] }}
-					</a>
+					{% if lesDates[i]['verrouillee'] %}
+						disabled="disabled"
+					{% endif %}
 				
-				</div>
-				<div class="col-md-1"></div>
+				>
+				
+					{{ lesDates[i]['fr'] }}
+				</a>
 			
-			{% endfor%}
+			</div>
+			<div class="col-md-1"></div>
+		
+		{% endfor%}
 		
 	</div>
 	
