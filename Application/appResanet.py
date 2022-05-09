@@ -13,8 +13,7 @@ app.secret_key = 'resanet'
 
 @app.route( '/', methods = [ 'GET' ] )
 def index() :
-	return render_template( 'vueAccueil.html', LoginError = "None" )
-
+	return render_template( 'vueAccueil.html')
 
 @app.errorhandler(404)
 def not_found(e):
@@ -43,11 +42,11 @@ def seConnecterUsager() :
 
 				return redirect( '/usager/reservations/lister' )
 			else :
-				return render_template('vueAccueil.html', LoginErorr = "Carte Bloquer" )
+				return 1
 		else :
-			return render_template('vueAccueil.html', LoginErorr = "/Echec de la connection" )
+			return 2
 	else :
-		return render_template('vueAccueil.html', LoginErorr = "Saisi incomplete" )
+		return 3
 
 
 @app.route( '/usager/seDeconnecter' , methods = [ 'GET' ] )
@@ -183,9 +182,9 @@ def seConnecterGestionnaire() :
 
 			return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 		else :
-			return render_template('vueAccueil.html', LoginError = "Echec de la connection" )
+			return "2"
 	else :
-		return render_template('vueAccueil.html', LoginError = "Saisi Incomplete")
+		return "3"
 
 
 @app.route( '/gestionnaire/seDeconnecter' , methods = [ 'GET' ] )

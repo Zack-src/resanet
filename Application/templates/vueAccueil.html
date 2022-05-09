@@ -9,9 +9,16 @@
             </div>
 
             <br>
-            {%if LoginError != "None"%}
-                <center><p class="text-danger">{{LoginErorr}}</p></center>
-            {%endif%}      
+            <center><p class="text-danger">
+                {%if LoginError == 1%}
+                    Carte Bloquer
+                {%elif LoginError == 2%}
+                    Echec de la connection
+                {%elif LoginError == 3%}
+                    Saisie Incomplete
+                {%endif%}
+            </p></center>
+                
       
             <div class="modal-body">
 
