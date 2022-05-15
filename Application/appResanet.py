@@ -10,10 +10,10 @@ from datetime import datetime
 app = Flask( __name__ )
 app.secret_key = 'resanet'
 
-
-@app.route( '/', methods = [ 'GET' ] )
+@app.route('/')
 def index() :
-	return render_template( 'vueAccueil.html')
+	code = request.args.get("code")
+	return render_template( 'vueAccueil.html', error = code)
 
 @app.errorhandler(404)
 def not_found(e):
@@ -23,7 +23,6 @@ def not_found(e):
 ##########################################################################
 #USAGER
 ##########################################################################
-
 
 @app.route( '/usager/seConnecter' , methods = [ 'POST' ] )
 def seConnecterUsager() :
@@ -42,12 +41,11 @@ def seConnecterUsager() :
 
 				return redirect( '/usager/reservations/lister' )
 			else :
-				return 1
+				return redirect( '/?code=1')
 		else :
-			return 2
+			return redirect( '/?code=2')
 	else :
-		return 3
-
+		return redirect( '/?code=3')
 
 @app.route( '/usager/seDeconnecter' , methods = [ 'GET' ] )
 def seDeconnecterUsager() :
@@ -92,7 +90,7 @@ def listerReservations() :
 		uneDate[ 'ferier' ] = False
 		for i in range(len(JoursFerier)):
 			if JoursFerier[i]['date'] == uneDate[ 'iso' ] and JoursFerier[i]['activee'] == 1:
-				uneDate[ 'ferier' ] = True				
+				uneDate[ 'ferier' ] = True
 
 		dates.append( uneDate )
 
@@ -109,8 +107,7 @@ def listerReservations() :
 	
 	return render_template( 'vueListeReservations.html' , 
 		DayName = DateName, laSession = session , leSolde = solde , 
-		lesDates = dates , soldeInsuffisant = soldeInsuffisant
-		)
+		lesDates = dates , soldeInsuffisant = soldeInsuffisant)
 
 
 @app.route( '/usager/reservations/enregistrer/<dateISO>' , methods = [ 'GET' ] )
@@ -124,8 +121,6 @@ def annulerReservation( dateISO ) :
 	modeleResanet.annulerReservation( session[ 'numeroCarte' ] , dateISO )
 	modeleResanet.crediterSolde( session[ 'numeroCarte' ] )
 	return redirect( '/usager/reservations/lister' )
-	
-
 
 @app.route( '/usager/mdp/modification/choisir' , methods = [ 'GET' ] )
 def choisirModifierMdpUsager() :
@@ -157,8 +152,7 @@ def modifierMdpUsager() :
 #GESTIONNAIRE
 ##########################################################################
 
-
-def check_gestionnaire_login():
+def sessionGestionnaire():
 	if "role" in session:
 		if session[ 'role' ] == "gestionnaire":
 			return True
@@ -182,10 +176,9 @@ def seConnecterGestionnaire() :
 
 			return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 		else :
-			return "2"
+			return redirect( '/?code=2')
 	else :
-		return "3"
-
+		return redirect( '/?code=3')
 
 @app.route( '/gestionnaire/seDeconnecter' , methods = [ 'GET' ] )
 def seDeconnecterGestionnaire() :
@@ -195,10 +188,9 @@ def seDeconnecterGestionnaire() :
 	session.pop( 'role' , None )
 	return redirect( '/' )
 
-
 @app.route( '/gestionnaire/getPersonnelAvecCarte' , methods = [ 'GET' ] )
 def getPersonnelAvecCarte() :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		personnels = modeleResanet.getPersonnelsAvecCarte()
 		if personnels != None :
 			datesHistorique = []
@@ -213,10 +205,9 @@ def getPersonnelAvecCarte() :
 	else:
 		return redirect('/')
 
-
 @app.route( '/gestionnaire/reinitialiserMdp/<numeroCarte>' , methods = [ 'GET' ] )
 def reinitialiserMdp(numeroCarte) :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		modeleResanet.reinitialiserMdp(numeroCarte)
 		return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 	else:
@@ -224,7 +215,7 @@ def reinitialiserMdp(numeroCarte) :
 
 @app.route( '/gestionnaire/activerCarte/<numeroCarte>' , methods = [ 'GET' ] )
 def activerCarte(numeroCarte) :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		modeleResanet.activerCarte(numeroCarte)
 		return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 	else:
@@ -232,16 +223,15 @@ def activerCarte(numeroCarte) :
 
 @app.route( '/gestionnaire/bloquerCarte/<numeroCarte>' , methods = [ 'GET' ] )
 def bloquerCarte(numeroCarte) :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		modeleResanet.bloquerCarte(numeroCarte)
 		return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 	else:
 		return redirect('/')
 
-
 @app.route( '/gestionnaire/CrediterCarte/<matricule>' , methods = [ 'POST' ] )
 def CrediterCarte(matricule) :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		somme = request.values.get("somme")
 		modeleResanet.crediterCarte(matricule, somme)
 		return redirect( '/gestionnaire/getPersonnelAvecCarte' )
@@ -250,7 +240,7 @@ def CrediterCarte(matricule) :
 
 @app.route( '/gestionnaire/CreerCarte/<matricule>' , methods = [ 'POST' ] )
 def CreerCarte(matricule):
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		active = False
 		if request.form.get( 'active' ) == "on":
 			active = True
@@ -262,16 +252,15 @@ def CreerCarte(matricule):
 
 @app.route( '/gestionnaire/SupprimerCarte/<matricule>' , methods = [ 'GET' ] )
 def SupprimerCarte(matricule):
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		modeleResanet.supprimerCarte(matricule)
 		return redirect( '/gestionnaire/getPersonnelAvecCarte' )
 	else:
 		return redirect('/')
 
-
 @app.route( '/gestionnaire/getDateReservation/', methods = [ 'GET' , 'POST' ] )
 def getDateReservation() :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		date = request.values.get('date')
 		personnels = []
 		if date != 0 :
@@ -283,7 +272,7 @@ def getDateReservation() :
 
 @app.route( '/gestionnaire/getCarteReservation/', methods = [ 'GET' , 'POST' ] )
 def getPersonnelReservation() :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		matricule = request.values.get('matricule')
 		debut = request.values.get('debut')
 		fin = request.values.get('fin')
@@ -294,12 +283,10 @@ def getPersonnelReservation() :
 		return render_template( 'vuePersonnelReservation.html', data = date, request = "Carte" )
 	else:
 		return redirect('/')
-	
-
 
 @app.route( '/gestionnaire/getPersonnelSansCarte' , methods = [ 'GET' ] )
 def getPersonnelSansCarte() :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		personnels = modeleResanet.getPersonnelsSansCarte()
 		if personnels != None :
 			return render_template('vuePersonnelSansCarte.html', lePersonnels = personnels)
@@ -307,10 +294,9 @@ def getPersonnelSansCarte() :
 	else:
 		return redirect('/')
 
-
 @app.route( '/gestionnaire/JourFerier' , methods = [ 'GET' ] )
 def getJourFerier() :
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		dates = modeleResanet.getJourFerier()
 		for i in range(len(dates)):
 			print(dates[i])
@@ -320,17 +306,15 @@ def getJourFerier() :
 	else:
 		return redirect('/')
 
-
 @app.route( '/gestionnaire/addJourFerier', methods = [ 'POST' ])
 def addJourFerier():
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		date = request.form[ 'date' ]
 		description = request.form[ 'description' ]
 
-		activee = 0		
-		if request.form.get( 'active' ) == "on":
+		activee = 0
+		if request.form.get( 'activee' ) == "on":
 			activee = 1
-
 
 		modeleResanet.addJourFerier(date, description, activee)
 
@@ -340,7 +324,7 @@ def addJourFerier():
 
 @app.route( '/gestionnaire/removeJourFerier/<jour>', methods = [ 'GET' ])
 def removeJourFerier(jour):
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		
 		modeleResanet.removeJourFerier(jour)
 		return redirect('/gestionnaire/JourFerier')
@@ -348,10 +332,9 @@ def removeJourFerier(jour):
 	else:
 		return redirect('/')
 
-
 @app.route( '/gestionnaire/EnableJourFerier/<jour>', methods = [ 'GET' ])
 def EnableJourFerier(jour):
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		print('[START] modeleResanet::EnableJourFerier')
 		modeleResanet.EnableJourFerier(jour)
 		return redirect('/gestionnaire/JourFerier')
@@ -361,7 +344,7 @@ def EnableJourFerier(jour):
 
 @app.route( '/gestionnaire/DisableJourFerier/<jour>', methods = [ 'GET' ])
 def DisableJourFerier(jour):
-	if check_gestionnaire_login():
+	if sessionGestionnaire():
 		print('[START] modeleResanet::DisableJourFerier')
 		modeleResanet.DisableJourFerier(jour)
 		return redirect('/gestionnaire/JourFerier')

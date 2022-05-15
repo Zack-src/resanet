@@ -3,36 +3,34 @@
 {% include "vueEnteteGestionnaire.html" %}
 
 <script>
-function myFunction() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
+	function filter() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("myInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("myTable");
+		tr = table.getElementsByTagName("tr");
 
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[0];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
 </script>
 
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-1"></div>
-	
+
 			<div class="col-md-1">
 
-				<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Matricule">
+				<input type="text" id="myInput" onkeyup="filter()" placeholder="Matricule">
 				
 				<table class="table" id="myTable">
 					<thead>
@@ -58,8 +56,7 @@ function myFunction() {
 									<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalCenter{{lePersonnels[i]['matricule']}}">
 										Creer Carte
 									</button>
-									
-									
+
 									<div 
 									class="modal fade" id="ModalCenter{{lePersonnels[i]['matricule']}}" 
 									tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle{{lePersonnels[i]['matricule']}}" 
@@ -81,7 +78,7 @@ function myFunction() {
 													<p>
 														{{ lePersonnels[i]['dateNaissance'] }}
 													</p>
-													
+
 													<form role="form" action="/gestionnaire/CreerCarte/{{lePersonnels[i]['matricule']}}" method="POST">
 														<div class="form-group">
 															<label for="numeroCarte">Activer carte</label>
@@ -94,27 +91,23 @@ function myFunction() {
 													</form>
 
 												</div>
-												
 											</div>
 										</div>
 									</div>
 
 								</td>
 							</tr>
-						
+
 						{% endfor%}
-					
+
 					</tbody>
 				</table>
 
 			</div>
 		<div class="col-md-1"></div>
-				
+
 	</div>
-	
 	
 </div>
 
-
 {% include "vuePied.html" %}
-

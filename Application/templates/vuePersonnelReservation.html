@@ -15,7 +15,6 @@
 						<button type="submit">Search</button>
 					</form>
 
-
 					<table class="table table-striped">
 						<thead>
 							<tr>
@@ -33,7 +32,7 @@
 									<td>{{data[i]['prenom']}}</td>
 									<td>{{data[i]['nomService']}}</td>
 								</tr>
-							{% endfor %}							
+							{% endfor %}
 						</tbody>
 					</table>
 				{% endif %}
@@ -51,7 +50,7 @@
 
 					<div class="col-md-1"></div>
 						{% for i in range( data | length) %}
-					
+
 							<div class="col-md-1">
 							
 								<a class="btn btn-success">

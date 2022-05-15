@@ -1,6 +1,16 @@
 {% include "vueEntete.html" %}
 {% include "vueEnteteAccueil.html" %}
 
+<center><p class="text-danger">
+    {%if error == "1" %}
+        Carte Bloquer
+    {%elif error == "2" %}
+        Echec de la connection
+    {%elif error == "3" %}
+        Saisie Incomplete
+    {%endif%}
+</p></center>
+
 <div class="modal fade" id="ModalConnection" tabindex="-1" role="dialog" aria-labelledby="ModalConnectionTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -9,16 +19,6 @@
             </div>
 
             <br>
-            <center><p class="text-danger">
-                {%if LoginError == 1%}
-                    Carte Bloquer
-                {%elif LoginError == 2%}
-                    Echec de la connection
-                {%elif LoginError == 3%}
-                    Saisie Incomplete
-                {%endif%}
-            </p></center>
-                
       
             <div class="modal-body">
 
@@ -34,6 +34,7 @@
                         <input type="password" class="form-control" name="mdp" id="mdp" placeholder="Saisir le mot de passe" required/>
                     </div>
                     <center><button type="submit" class="btn btn-primary">Se connecter</button></center>
+                
                 </form>
             </div>
 

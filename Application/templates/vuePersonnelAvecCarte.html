@@ -3,26 +3,26 @@
 {% include "vueEnteteGestionnaire.html" %}
 
 <script>
-function myFunction() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
+function filter() {
+
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
 
   // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if (td) {
+			txtValue = td.textContent || td.innerText;
+			if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = "";
+			} else {
+				tr[i].style.display = "none";
+			}
+		}
+	}
 }
 </script>
 
@@ -35,7 +35,7 @@ function myFunction() {
 
 				<div></div>
 
-				<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Matricule">
+				<input type="text" id="myInput" onkeyup="filter()" placeholder="Matricule">
 
 				<table class="table table-striped" id="myTable">
 					<thead>
@@ -59,15 +59,14 @@ function myFunction() {
 								<td>{{ lePersonnels[i]['nom'] }}</td>
 								<td>{{ lePersonnels[i]['prenom'] }}</td>
 								<td>{{ lePersonnels[i]['nomService'] }}</td>
-								
+
 								<!-- créditer  -->
-								<td>
 								<td>
 
 									<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalCrediter{{lePersonnels[i]['matricule']}}">
 										Créditer Carte
 									</button>
-																		
+
 									<div 
 									class="modal fade" id="ModalCrediter{{lePersonnels[i]['matricule']}}" 
 									tabindex="-1" role="dialog" aria-labelledby="ModalCrediterTitle{{lePersonnels[i]['matricule']}}" 
@@ -77,9 +76,9 @@ function myFunction() {
 												<div class="modal-header">
 													<h5 class="modal-title" id="ModalCrediterLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
 												</div>
-												
+
 												<div class="modal-body">
-													
+
 													<p>
 														{{ lePersonnels[i]['matricule'] }}
 														{{ lePersonnels[i]['nom'] }} {{ lePersonnels[i]['prenom'] }}
@@ -89,7 +88,7 @@ function myFunction() {
 													<p>
 														{{ lePersonnels[i]['dateNaissance'] }}
 													</p>
-													
+
 													<form role="form" action="/gestionnaire/CrediterCarte/{{lePersonnels[i]['matricule']}}" method="POST">
 														<div class="form-group">
 															<label for="Credit">Somme</label>
@@ -100,14 +99,12 @@ function myFunction() {
 														<a href="/gestionnaire/getPersonnelAvecCarte" class="btn btn-danger">Annuller</a>
 
 													</form>
-
 												</div>
-												
 											</div>
 										</div>
 									</div>
 								</td>
-								
+
 								<!-- activer / bloquer  -->
 								<td>
 									<a
@@ -118,18 +115,17 @@ function myFunction() {
 										href="/gestionnaire/activerCarte/{{lePersonnels[i]['matricule']}}" 
 										class="btn btn-success btn-block">Activer
 									{% endif %} 
-									
+
 									<a/>
 								</td>
-								
+
 								<!-- reset mdp  -->
 								<td>
 									{% if lePersonnels[i]['activee'] == True %}
 										<button type="button" class="btn btn-info" data-toggle="modal" data-target="#ModalResetMDP{{lePersonnels[i]['matricule']}}">
 											Reset MDP
 										</button>
-										
-										
+
 										<div 
 										class="modal fade" id="ModalResetMDP{{lePersonnels[i]['matricule']}}" 
 										tabindex="-1" role="dialog" aria-labelledby="ModalResetMDPTitle{{lePersonnels[i]['matricule']}}" 
@@ -139,9 +135,9 @@ function myFunction() {
 													<div class="modal-header">
 														<h5 class="modal-title" id="ModalResetMDPLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
 													</div>
-													
+
 													<div class="modal-body">
-														
+
 														<p>
 															{{ lePersonnels[i]['matricule'] }}
 															{{ lePersonnels[i]['nom'] }} {{ lePersonnels[i]['prenom'] }}
@@ -151,8 +147,7 @@ function myFunction() {
 														<p>
 															{{ lePersonnels[i]['dateNaissance'] }}
 														</p>
-														
-														
+
 														<a href="/gestionnaire/reinitialiserMdp/{{lePersonnels[i]['matricule']}}" 
 														class="btn btn-success">Oui</a>
 														<button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>	
@@ -183,7 +178,7 @@ function myFunction() {
 													</button>
 												</div>
 												<div class="modal-body">
-												
+
 													<div class="row">
 														{% if dates[i]['dates'] | length > 0 %}
 															{% for j in range( dates[i]['dates'] | length ) %}
@@ -196,21 +191,17 @@ function myFunction() {
 																<div class="col-md-1"></div>
 
 															{% endfor %}
-														
+
 														{% else %}
 															<div class="col-md-5">
 																<p>Cette n'as aucune reservation</p>
 															</div>
-														
 														{% endif %}
-														
 													</div>
 												</div>
-												
 											</div>
 										</div>
 									</div>
-									
 								</td>
 
 								<td>
@@ -228,7 +219,7 @@ function myFunction() {
 												<div class="modal-header">
 													<h5 class="modal-title" id="ModalDeleteAccLongTitle{{lePersonnels[i]['matricule']}}">Confirmation</h5>
 												</div>
-												
+
 												<div class="modal-body">
 													<p> 
 														<strong>Voulez vous supprimer la carte de :</strong>
@@ -242,30 +233,28 @@ function myFunction() {
 													<p>
 														{{ lePersonnels[i]['dateNaissance'] }}
 													</p>
-													
-													
-													<a href="/gestionnaire/SupprimerCarte/{{lePersonnels[i]['matricule']}}" 
+
+													<a href="/gestionnaire/SupprimerCarte/{{lePersonnels[i]['matricule']}}"
 													class="btn btn-success">Oui</a>
-													<button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>	
+													<button type="button" class="btn btn-danger" data-dismiss="modal">Non</button>
 												</div>
-												
+
 											</div>
 										</div>
 									</div>
 								</td>
 							</tr>
-								
+
 						{% endfor %}
-					
+
 					</tbody>
 				</table>
 
 			</div>
 		<div class="col-md-1"></div>
-				
-	</div>
-	
-</div>
 
+	</div>
+
+</div>
 
 {% include "vuePied.html" %}
