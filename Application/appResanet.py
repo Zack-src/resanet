@@ -200,7 +200,7 @@ def getPersonnelAvecCarte() :
 				datesHistorique.append(uneDate)
 
 			return render_template('vuePersonnelAvecCarte.html', lePersonnels = personnels, dates = datesHistorique)
-		else : 
+		else :
 			print("db innacessible")
 	else:
 		return redirect('/')

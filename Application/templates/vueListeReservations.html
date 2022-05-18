@@ -1,15 +1,15 @@
 {% include "vueEntete.html" %}
 {% include "vueEnteteUsager.html" %}
 
-<script>
-	$(function() {
-		$('[data-toggle="popover"]').popover();
-	});
-</script>
-
 <div class="container-fluid">
 
 	<div class="row">
+
+		<div class="alert alert-danger">
+			<div id="date"></div>
+		</div>
+
+
 		<div class="col-md-1"></div>
 
 		{% for i in range(5) %}
@@ -91,5 +91,17 @@
 	</div>
 
 </div>
+
+<script>
+	$(function() {
+		$('[data-toggle="popover"]').popover();
+	});
+
+	let currentDate = new Date();
+	let today = currentDate.getDate() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getFullYear();
+	document.getElementById("date").innerText=today;
+
+</script>
+
 
 {% include "vuePied.html" %}
